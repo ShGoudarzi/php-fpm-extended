@@ -62,3 +62,22 @@ included:
 `Composer`
 `ionCube Loader`
 `SourceGuardian`
+
+
+# Installation
+
+## Deployment
+
+Copy the `docker-compose.yml` template into your project folder and start the container.
+
+or
+
+```
+docker run -d \
+    --name=php74-fpm \
+    -v /home/web:/usr/share/nginx/html \
+    -p 9000:9000 \
+    --restart unless-stopped \
+    shgoudarzi/php-fpm-alpine-extended:7.4
+```
+
