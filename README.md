@@ -68,7 +68,29 @@ included:
 
 ## Deployment
 
-Copy the `docker-compose.yml` template into your project folder and start the container.
+Copy the `docker-compose.yml` template into your project folder and start the container ( `docker compose -f docker-compose.yml up -d` ):
+
+```
+version: '3.9'
+services:
+  #PHP Service
+  php74-fpm:
+    image: shgoudarzi/php-fpm-alpine-extended:7.4    # ( replace with with your own version want )
+    container_name: php74-fpm
+    restart: unless-stopped
+    tty: true
+#    ports:
+#      - "9000:9000"
+    volumes:
+      #sites - working dir ( both side must be the same as root path of webserver conf like Nginx )
+      - /home/web:/usr/share/nginx/html
+      #Conf files
+#      - /local/path/to/php.ini:/usr/local/etc/php/php.ini
+#      - /local/path/to/www.conf:/usr/local/etc/php-fpm.d/www.conf
+    environment:
+      - TZ="Asia/Tehran"
+```
+
 
 or
 
