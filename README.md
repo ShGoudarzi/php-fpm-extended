@@ -66,6 +66,12 @@ included:
 
 # Installation
 
+
+Install docker, docker compose
+
+https://docs.docker.com/engine/install/
+
+
 ## Deployment
 
 Copy the `docker-compose.yml` template into your project folder and start the container ( `docker compose -f docker-compose.yml up -d` ):
