@@ -102,10 +102,10 @@ or
 
 ```
 docker run -d \
-    --name=php74-fpm \
+    --name=php-fpm \
     -v /home/web:/usr/share/nginx/html \
     -p 9000:9000 \
     --restart unless-stopped \
-    shgoudarzi/php-fpm-alpine-extended:7.4
+    shgoudarzi/php-fpm-alpine-extended:latest
 ```
 
