@@ -81,8 +81,8 @@ version: '3.9'
 services:
   #PHP Service
   php74-fpm:
-    image: shgoudarzi/php-fpm-alpine-extended:7.4    # ( replace with with your own version want )
-    container_name: php74-fpm
+    image: shgoudarzi/php-fpm-alpine-extended:latest    # ( replace with with your own version want )
+    container_name: php-fpm
     restart: unless-stopped
     tty: true
 #    ports:
