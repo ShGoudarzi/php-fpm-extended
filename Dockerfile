@@ -33,6 +33,7 @@ ENV DEPENDENSIES="bash \
     tidyhtml-dev"
 
 ENV EXTENSIONS_NEED_CONFIG="intl "
+ENV EXTENSIONS_NEED_ENABLE=""
 ENV EXTENSIONS_NEED_PECL="imagick redis "
 
 ENV EXTENSIONS="bcmath \
@@ -64,7 +65,7 @@ RUN apk update && apk upgrade \
     && docker-php-ext-configure ${EXTENSIONS_NEED_CONFIG} \
     && docker-php-ext-install ${EXTENSIONS} \
     && pecl install ${EXTENSIONS_NEED_PECL} \
-    && docker-php-ext-enable ${EXTENSIONS_NEED_PECL} 
+    && docker-php-ext-enable ${EXTENSIONS_NEED_PECL} ${EXTENSIONS_NEED_ENABLE}
 
 # IonCube Loader Installation
 ARG INSTALL_IONCUBE=true
