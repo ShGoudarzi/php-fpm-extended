@@ -3,125 +3,59 @@
 # #############################################################################
 FROM php:7.4-fpm
 
+ENV image_version="1.0"
 ENV PHP_VERSION=7.4
-ENV image_version="v$PHP_VERSION"
-ENV COMPOSER_VERSION=2.4.0
 
-LABEL maintainer="https://github.com/ShGoudarzi" \
+LABEL maintainer="me@ShGoudarzi.ir" \
     version=${image_version} \
     description="Original PHP-FPM + Useful PHP extensions + Apply Basic configuration"
 
- 
+
 # #############################################################################
 #  Useful PHP extensions 
 # #############################################################################
-ENV BUILD_DEPENDENSIES="autoconf g++ gcc make libtool libc-dev pkg-config"  
-ENV DEPENDENSIES=" iputils-ping \ 
-    curl wget vim git \ 
-    libmemcached-dev \
-    libc-client-dev libkrb5-dev \
-    libz-dev \
-    libpq-dev \
-    libssl-dev libssl-doc libsasl2-dev \
-	  libmcrypt-dev \
-	  libxml2-dev \
-	  zlib1g-dev libicu-dev \
-	  libbz2-dev \
-	  libcurl4-openssl-dev \
-	  libgmp-dev libib-util \
-    libpng++-dev \
-	  libwebp-dev libjpeg-dev libjpeg62-turbo-dev libpng-dev libfreetype6-dev \
-	  libmagick++-dev libmagickwand-dev libmagic-dev \
-	  libgd-dev \
-	  libtidy-dev libxslt1-dev libexif-dev \
-	  libxslt-dev \
-	  libmhash2 libmhash-dev \
-	  libpcre3 libpcre3-dev \
-	  libsodium-dev \
-	  libonig-dev \
-    libzip-dev  "
 
-
-ENV EXTENSIONS_NEED_PECL="imagick redis mongodb memcached "
-
-ENV EXTENSIONS="bcmath \
+ENV EXTENSIONS=" @composer \
+    bcmath \
     bz2 \
     calendar \
-    curl \
     dba \
     exif \
-    mbstring \
     gd \
-    gmp \
     gettext \
-    fileinfo \
-    ftp \
-    intl \
+    gmp \
+    imagick \
     imap \
+    intl \
+    ioncube_loader \
+    memcache \
+    memcached \
     mysqli \
+    odbc \
     opcache \
     pcntl \
-    pdo \
     pdo_mysql \
+    pdo_odbc \
     pdo_pgsql \
     pgsql \
     soap \
-    sodium \
     sockets \
+    sourceguardian \
     tidy \
+    timezonedb \
     xmlrpc \
-    xml \
     xsl \
-    zip "
+    zip"
 
 
 # Base Installation
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
-    && apt-get -y install ${BUILD_DEPENDENSIES} \
-    && apt-get install -y --no-install-recommends ${DEPENDENSIES} \
-    # Configure
-    && docker-php-ext-configure intl \
-    && docker-php-ext-configure gd --prefix=/usr --with-jpeg --with-webp --with-freetype \
-    && docker-php-ext-configure imap --with-kerberos --with-imap-ssl \
-    # Core Install
-    && docker-php-ext-install ${EXTENSIONS} \
-    # PECL
-    && pecl install ${EXTENSIONS_NEED_PECL} \
-    && docker-php-ext-enable ${EXTENSIONS_NEED_PECL} 
-
-
-# IonCube Loader Installation
-ARG INSTALL_IONCUBE=true
-RUN if [ ${INSTALL_IONCUBE} = true ]; then \
-    curl -L -o /tmp/ioncube_loaders_lin_x86-64.tar.gz https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
-    && tar zxpf /tmp/ioncube_loaders_lin_x86-64.tar.gz -C /tmp \
-    && mv /tmp/ioncube/ioncube_loader_lin_${PHP_VERSION}.so $(php -r "echo ini_get('extension_dir');")/ioncube_loader.so \
-    && printf "zend_extension=ioncube_loader.so\n" > $PHP_INI_DIR/conf.d/0ioncube.ini \
-;fi
-
-
-# Composer Installation
-ARG INSTALL_COMPOSER=true
-RUN if [ ${INSTALL_COMPOSER} = true ]; then \
-    mkdir /etc/composer \
-    && wget https://getcomposer.org/installer -P /etc/composer \
-    && cd /etc/composer && php ./installer  --filename=composer --verion=${COMPOSER_VERSION} --install-dir=/bin \
-    && rm /etc/composer/installer \
-    && chmod a+x /bin/composer \
-;fi
-
-
-# SourceGuardian Loader Installation
-ARG INSTALL_SOURCE_GUARDIAN=true
-RUN if [ ${INSTALL_SOURCE_GUARDIAN} = true ]; then \
-    mkdir -p /tmp/sourceguardian \
-    && cd /tmp/sourceguardian \
-    && curl -Os https://www.sourceguardian.com/loaders/download/loaders.linux-x86_64.tar.gz \
-    && tar xzf loaders.linux-x86_64.tar.gz \
-    && cp ixed.${PHP_VERSION}.lin "$(php -i | grep '^extension_dir =' | cut -d' ' -f3)/sourceguardian.so" \
-    && echo "extension=sourceguardian.so" > /usr/local/etc/php/conf.d/15-sourceguardian.ini \
-;fi
+    && curl -sSLf \
+    -o /usr/local/bin/install-php-extensions \
+    https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions \
+    && chmod +x /usr/local/bin/install-php-extensions \
+    && install-php-extensions ${EXTENSIONS}
 
 
 # #############################################################################
@@ -150,11 +84,7 @@ RUN rm -f $PHP_INI_DIR/php.ini-development && mv $PHP_INI_DIR/php.ini-production
     && sed -i 's/;opcache.revalidate_freq=2/opcache.revalidate_freq=0/g' ${PHP_INI} 
 
 
-
 # Cleaning up
-RUN apt-get remove --purge -y build-essential ${BUILD_DEPENDENSIES} && apt-get autoclean && apt-get clean \
+RUN apt-get remove --purge -y build-essential && apt-get autoclean && apt-get clean \
     && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
     && rm /var/log/lastlog /var/log/faillog
-
-
-
