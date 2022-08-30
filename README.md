@@ -1,5 +1,5 @@
 # PHP-FPM Extended 
-Original PHP-FPM Alpine version + Most useful PHP extensions + Apply Basic configuration
+PHP-FPM Original Docker image + Useful PHP extensions + Apply Basic configuration
 
 included:
 
