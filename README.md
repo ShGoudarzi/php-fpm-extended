@@ -1,4 +1,4 @@
-# PHP-FPM Alpine Extended 
+# PHP-FPM Extended 
 Original PHP-FPM Alpine version + Most useful PHP extensions + Apply Basic configuration
 
 included:
@@ -81,7 +81,7 @@ version: '3.9'
 services:
   #PHP Service
   php74-fpm:
-    image: shgoudarzi/php-fpm-alpine-extended:latest    # ( replace with with your own version want )
+    image: shgoudarzi/php-fpm-extended:latest    # ( replace with with your own version want )
     container_name: php-fpm
     restart: unless-stopped
     tty: true
@@ -106,6 +106,6 @@ docker run -d \
     -v /home/web:/usr/share/nginx/html \
     -p 9000:9000 \
     --restart unless-stopped \
-    shgoudarzi/php-fpm-alpine-extended:latest
+    shgoudarzi/php-fpm-extended:latest
 ```
 
