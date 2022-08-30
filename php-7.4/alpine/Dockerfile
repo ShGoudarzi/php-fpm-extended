@@ -1,105 +1,60 @@
 # #############################################################################
-# Original PHP-FPM Alpine version
+# Original PHP-FPM Alpine 
 # #############################################################################
 FROM php:7.4-fpm-alpine
 
 ENV image_version="1.0"
 ENV PHP_VERSION=7.4
-ENV COMPOSER_VERSION=2.3.7
 
 LABEL maintainer="me@ShGoudarzi.ir" \
     version=${image_version} \
-    description="Original PHP-FPM Alpine version + Most useful PHP extensions + Apply Basic configuration"
+    description="Original PHP-FPM Alpine + Useful PHP extensions + Apply Basic configuration"
 
 
 # #############################################################################
 #  Useful PHP extensions 
 # #############################################################################
-ENV BUILD_DEPENDENSIES="autoconf g++ libtool make pcre-dev"
-ENV DEPENDENSIES="bash \
-    freetype \
-    gettext-dev \
-    git \
-    icu-dev \
-    imagemagick-dev \
-    libgd \
-    bzip2-dev \
-    libjpeg-turbo \
-    libpng-dev \
-    libxml2-dev \
-    libzip-dev \
-    libxslt-dev \
-    postgresql-dev \
-    tidyhtml-dev"
 
-ENV EXTENSIONS_NEED_CONFIG="intl "
-ENV EXTENSIONS_NEED_ENABLE=""
-ENV EXTENSIONS_NEED_PECL="imagick redis "
-
-ENV EXTENSIONS="bcmath \
+ENV EXTENSIONS=" @composer \
+    bcmath \
     bz2 \
     calendar \
+    dba \
     exif \
     gd \
     gettext \
+    gmp \
+    imagick \
+    imap \
     intl \
+    ioncube_loader \
+    memcache \
+    memcached \
     mysqli \
+    odbc \
     opcache \
     pcntl \
-    pdo \
     pdo_mysql \
+    pdo_odbc \
     pdo_pgsql \
     pgsql \
     soap \
     sockets \
+    sourceguardian \
     tidy \
-    xml \
+    timezonedb \
+    xmlrpc \
     xsl \
     zip"
 
 
 # Base Installation
 RUN apk update && apk upgrade \
-    && apk add --no-cache --virtual .build-deps ${PHPIZE_DEPS} ${BUILD_DEPENDENSIES} \
-    && apk add --no-cache ${DEPENDENSIES} \
-    && docker-php-ext-configure ${EXTENSIONS_NEED_CONFIG} \
-    && docker-php-ext-install ${EXTENSIONS} \
-    && pecl install ${EXTENSIONS_NEED_PECL} \
-    && docker-php-ext-enable ${EXTENSIONS_NEED_PECL} ${EXTENSIONS_NEED_ENABLE}
-
-# IonCube Loader Installation
-ARG INSTALL_IONCUBE=true
-RUN if [ ${INSTALL_IONCUBE} = true ]; then \
-    curl -L -o /tmp/ioncube_loaders_lin_x86-64.tar.gz https://downloads.ioncube.com/loader_downloads/ioncube_loaders_lin_x86-64.tar.gz \
-    && tar zxpf /tmp/ioncube_loaders_lin_x86-64.tar.gz -C /tmp \
-    && mv /tmp/ioncube/ioncube_loader_lin_${PHP_VERSION}.so $(php -r "echo ini_get('extension_dir');")/ioncube_loader.so \
-    && printf "zend_extension=ioncube_loader.so\n" > $PHP_INI_DIR/conf.d/0ioncube.ini \
-    && rm -rf /tmp/ioncube* \
-;fi
-
-
-# Composer Installation
-ARG INSTALL_COMPOSER=true
-RUN if [ ${INSTALL_COMPOSER} = true ]; then \
-    mkdir /etc/composer \
-    && wget https://getcomposer.org/installer -P /etc/composer \
-    && cd /etc/composer && php ./installer  --filename=composer --verion=${COMPOSER_VERSION} --install-dir=/bin \
-    && rm /etc/composer/installer \
-    && chmod a+x /bin/composer \
-;fi
-
-
-# SourceGuardian Loader Installation
-ARG INSTALL_SOURCE_GUARDIAN=true
-RUN if [ ${INSTALL_SOURCE_GUARDIAN} = true ]; then \
-    mkdir -p /tmp/sourceguardian \
-    && cd /tmp/sourceguardian \
-    && curl -Os https://www.sourceguardian.com/loaders/download/loaders.linux-x86_64.tar.gz \
-    && tar xzf loaders.linux-x86_64.tar.gz \
-    && cp ixed.${PHP_VERSION}.lin "$(php -i | grep '^extension_dir =' | cut -d' ' -f3)/sourceguardian.so" \
-    && echo "extension=sourceguardian.so" > /usr/local/etc/php/conf.d/15-sourceguardian.ini \
-    && rm -rf /tmp/sourceguardian \
-;fi
+    && curl -sSLf \
+    -o /usr/local/bin/install-php-extensions \
+    https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions \
+    && chmod +x /usr/local/bin/install-php-extensions \
+    && install-php-extensions ${EXTENSIONS}
 
 
 # #############################################################################
@@ -129,7 +84,5 @@ RUN rm -f $PHP_INI_DIR/php.ini-development && mv $PHP_INI_DIR/php.ini-production
 
 
 # Cleaning up
-RUN apk del .build-deps \
-    && rm -rf /tmp/* \
+RUN rm -rf /tmp/* \
     && rm -rf /var/cache/apk/* 
-
