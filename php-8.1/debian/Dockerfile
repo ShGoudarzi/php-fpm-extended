@@ -64,24 +64,24 @@ RUN apt-get update \
 ENV PHP_INI=$PHP_INI_DIR/php.ini
 RUN rm -f $PHP_INI_DIR/php.ini-development && mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini \
     # General
-    && sed -i 's/short_open_tag = Off/short_open_tag = On/g' ${PHP_INI} \
-    && sed -i 's/disable_functions =/disable_functions = "show_source, system, shell_exec, passthru, exec, popen, proc_open"/g' ${PHP_INI} \
-    && sed -i 's/max_execution_time = 30/max_execution_time = 300/g' ${PHP_INI} \
-    && sed -i 's/;max_input_vars = 1000/max_input_vars = 10000/g' ${PHP_INI} \
-    && sed -i 's/max_input_time = 60/max_input_time = 300/g' ${PHP_INI} \
-    && sed -i 's/memory_limit = 128M/memory_limit = 256M/g' ${PHP_INI} \
-    && sed -i 's/post_max_size = 8M/post_max_size = 100M/g' ${PHP_INI} \
-    && sed -i 's/upload_max_filesize = 2M/upload_max_filesize = 100M/g' ${PHP_INI} \
-    && sed -i 's/;session.save_path = "\/tmp"/session.save_path = "\/tmp"/g' ${PHP_INI} \
-    && sed -i 's/;date.timezone =/date.timezone = "UTC"/g' ${PHP_INI} \
+    && sed -i 's/short_open_tag.*/short_open_tag = On/g' ${PHP_INI} \
+    && sed -i 's/disable_functions.*/disable_functions = "show_source, system, shell_exec, passthru, exec, popen, proc_open"/g' ${PHP_INI} \
+    && sed -i 's/max_execution_time.*/max_execution_time = 300/g' ${PHP_INI} \
+    && sed -i 's/;max_input_vars.*/max_input_vars = 10000/g' ${PHP_INI} \
+    && sed -i 's/max_input_time.*/max_input_time = 300/g' ${PHP_INI} \
+    && sed -i 's/memory_limit.*/memory_limit = 256M/g' ${PHP_INI} \
+    && sed -i 's/post_max_size.*/post_max_size = 100M/g' ${PHP_INI} \
+    && sed -i 's/upload_max_filesize.*/upload_max_filesize = 100M/g' ${PHP_INI} \
+    && sed -i 's/;session.save_path.*/session.save_path = "\/tmp"/g' ${PHP_INI} \
+    && sed -i 's/;date.timezone.*/date.timezone = "UTC"/g' ${PHP_INI} \
     # Opcache
-    && sed -i 's/;opcache.enable=1/opcache.enable=1/g' ${PHP_INI} \
-    && sed -i 's/;opcache.memory_consumption=128/opcache.memory_consumption=256/g' ${PHP_INI} \
-    && sed -i 's/;opcache.use_cwd=1/opcache.use_cwd=0/g' ${PHP_INI} \
-    && sed -i 's/;opcache.max_file_size=0/opcache.max_file_size=0/g' ${PHP_INI} \
-    && sed -i 's/;opcache.max_accelerated_files=10000/opcache.max_accelerated_files=30000/g' ${PHP_INI} \
-    && sed -i 's/;opcache.validate_timestamps=1/opcache.validate_timestamps=1/g' ${PHP_INI} \
-    && sed -i 's/;opcache.revalidate_freq=2/opcache.revalidate_freq=0/g' ${PHP_INI} 
+    && sed -i 's/;opcache.enable.*/opcache.enable=1/g' ${PHP_INI} \
+    && sed -i 's/;opcache.memory_consumption.*/opcache.memory_consumption=256/g' ${PHP_INI} \
+    && sed -i 's/;opcache.use_cwd.*/opcache.use_cwd=0/g' ${PHP_INI} \
+    && sed -i 's/;opcache.max_file_size.*/opcache.max_file_size=0/g' ${PHP_INI} \
+    && sed -i 's/;opcache.max_accelerated_files.*/opcache.max_accelerated_files=30000/g' ${PHP_INI} \
+    && sed -i 's/;opcache.validate_timestamps.*/opcache.validate_timestamps=1/g' ${PHP_INI} \
+    && sed -i 's/;opcache.revalidate_freq.*/opcache.revalidate_freq=0/g' ${PHP_INI} 
 
 
 # Cleaning up
