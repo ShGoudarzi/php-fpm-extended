@@ -38,6 +38,7 @@ ENV EXTENSIONS=" @composer \
     pdo_odbc \
     pdo_pgsql \
     pgsql \
+    redis \
     soap \
     sockets \
     sourceguardian \
