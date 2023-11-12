@@ -14,7 +14,6 @@ LABEL maintainer="me@ShGoudarzi.ir" \
 # #############################################################################
 #  Useful PHP extensions 
 # #############################################################################
-
 ENV EXTENSIONS=" @composer \
     bcmath \
     bz2 \
@@ -38,6 +37,7 @@ ENV EXTENSIONS=" @composer \
     pdo_odbc \
     pdo_pgsql \
     pgsql \
+    redis \
     soap \
     sockets \
     sourceguardian \
@@ -48,9 +48,9 @@ ENV EXTENSIONS=" @composer \
     zip"
 
 
+# #############################################################################
 # Base Installation
-#USER root
-
+# #############################################################################
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt-get update \
     && curl -sSLf \
@@ -86,8 +86,16 @@ RUN rm -f $PHP_INI_DIR/php.ini-development && mv $PHP_INI_DIR/php.ini-production
     && sed -i 's/;opcache.revalidate_freq.*/opcache.revalidate_freq=0/g' ${PHP_INI} 
 
 
+# #############################################################################
 # Cleaning up
+# #############################################################################
 RUN apt-get remove --purge -y build-essential && apt-get autoclean && apt-get clean \
-    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* \
+    && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /var/cache/apt/archives/* \
     && rm /var/log/lastlog /var/log/faillog
 
+
+# #############################################################################
+# User Managment
+# #############################################################################
+RUN  useradd -u 1001 -s /sbin/nologin -c "Safe-Container-User" -M scu
+USER scu
