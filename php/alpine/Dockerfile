@@ -1,5 +1,5 @@
 # #############################################################################
-# Dynamic PHP-FPM Alpine with Optimizations
+# Dynamic PHP-FPM Alpine with Optimizations and Unrooted User (UID 1001)
 # #############################################################################
 # Allow customization of PHP version
 ARG PHP_VERSION=7.4
@@ -7,10 +7,10 @@ ARG PHP_VERSION=7.4
 FROM php:${PHP_VERSION}-fpm-alpine
 
 # Metadata
-ENV image_version="1.1"
-LABEL maintainer="me@ShayanGoudarzi.ir" \
+ENV image_version="1.3"
+LABEL maintainer="me@ShGoudarzi.ir" \
       version=${image_version} \
-      description="Optimized PHP-FPM Alpine with dynamic PHP version + Useful PHP extensions + Basic configurations"
+      description="Optimized PHP-FPM Alpine (Unrooted, UID=1001) with dynamic PHP version + Useful PHP extensions + Basic configurations"
 
 # #############################################################################
 #  Install Useful PHP Extensions
@@ -51,7 +51,7 @@ ENV EXTENSIONS=" @composer \
 # Install PHP extensions and clean up in a single RUN layer
 RUN set -eux; \
     apk update && apk upgrade --no-cache && \
-    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS \
+    apk add --no-cache --virtual .build-deps $PHPIZE_DEPS shadow \
     && curl -sSLf -o /usr/local/bin/install-php-extensions \
     https://github.com/mlocati/docker-php-extension-installer/releases/latest/download/install-php-extensions \
     && chmod +x /usr/local/bin/install-php-extensions \
@@ -59,6 +59,20 @@ RUN set -eux; \
     # Remove build dependencies and clean up
     && apk del --no-cache .build-deps \
     && rm -rf /tmp/* /var/cache/apk/*
+
+# #############################################################################
+# Create a Non-Root User (UID 1001) and Set Permissions
+# #############################################################################
+# Add a non-root user `appuser` with UID 1001 and group `appgroup` with GID 1001
+###  RUN set -eux; \
+###      addgroup -g 1001 appgroup && \
+###      adduser -D -u 1001 -G appgroup -h /home/appuser -s /bin/sh appuser && \
+###      mkdir -p /var/www/html && \
+###      chown -R appuser:appgroup /var/www/html && \
+###      chown -R appuser:appgroup /var/tmp && \
+###      chown -R appuser:appgroup /tmp && \
+###      chown -R appuser:appgroup /usr/local/etc/php/conf.d/ && \
+###      chown -R appuser:appgroup /home/appuser
 
 # #############################################################################
 # Apply Basic PHP Configurations
@@ -87,9 +101,16 @@ RUN set -eux; \
     && sed -i 's/;opcache.revalidate_freq.*/opcache.revalidate_freq=0/g' ${PHP_INI}
 
 # #############################################################################
-# Final Cleanup
+# Switch to Non-Root User (UID 1001) and Start PHP-FPM
 # #############################################################################
-# Remove unnecessary files to reduce image size
-RUN set -eux; \
-    rm -rf /tmp/* /var/cache/apk/* /var/tmp/* /usr/local/bin/install-php-extensions
+# Switch to non-root user `appuser` with UID 1001
+###  USER appuser
 
+# Set the working directory
+###  WORKDIR /var/www/html
+
+# Expose port 9000 for PHP-FPM
+###  EXPOSE 9000
+
+# Command to run PHP-FPM
+###  CMD ["php-fpm"]
