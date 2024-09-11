@@ -8,7 +8,7 @@ FROM php:${PHP_VERSION}-fpm-alpine
 
 # Metadata
 ENV image_version="1.3"
-LABEL maintainer="me@ShGoudarzi.ir" \
+LABEL maintainer="me@ShayanGoudarzi.ir" \
       version=${image_version} \
       description="Optimized PHP-FPM Alpine (Unrooted, UID=1001) with dynamic PHP version + Useful PHP extensions + Basic configurations"
 
