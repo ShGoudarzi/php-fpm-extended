@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  php-fpm-alpine:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        PHP_VERSION: "8.2"  # You can change this to any PHP version (e.g., 7.4, 8.0, etc.)
+    container_name: php-fpm-alpine
+    environment:
+      PHP_VERSION: ${PHP_VERSION}  # You can specify PHP version via environment variable
+    volumes:
+      - ./app:/var/www/html    # Your application code
+#      - ./php.ini:/usr/local/etc/php/php.ini  # Mount the php.ini from host
