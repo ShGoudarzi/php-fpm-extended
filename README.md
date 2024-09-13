@@ -74,38 +74,31 @@ https://docs.docker.com/engine/install/
 
 ## Deployment
 
-Copy the `docker-compose.yml` template into your project folder and start the container ( `docker compose -f docker-compose.yml up -d` ):
-
 ```
-version: '3.9'
-services:
-  #PHP Service
-  php74-fpm:
-    image: shgoudarzi/php-fpm-extended:latest    # ( replace with with your own version want )
-    container_name: php-fpm
-    restart: unless-stopped
-    tty: true
-#    ports:
-#      - "9000:9000"
-    volumes:
-      #sites - working dir ( both side must be the same as root path of webserver conf like Nginx )
-      - /home/web:/usr/share/nginx/html
-      #Conf files
-#      - /local/path/to/php.ini:/usr/local/etc/php/php.ini
-#      - /local/path/to/www.conf:/usr/local/etc/php-fpm.d/www.conf
-    environment:
-      - TZ="Asia/Tehran"
+git clone https://github.com/ShGoudarzi/php-fpm-extended.git
+cd php-fpm-extended
+cd alpine
 ```
 
 
-or
+### 1. Simple way - default configuration
+`docker-compose up -d` 
 
+
+### 2. Advanced way - custom configuration
+
+Build temp image and copy the container php.ini file to the host ( if this is the first time)
 ```
-docker run -d \
-    --name=php-fpm \
-    -v /home/web:/usr/share/nginx/html \
-    -p 9000:9000 \
-    --restart unless-stopped \
-    shgoudarzi/php-fpm-extended:latest
+docker build -t custom-php-fpm .
+docker run --name temp-php-container --rm -d custom-php-fpm
+docker cp temp-php-container:/usr/local/etc/php/php.ini ./php.ini
+docker stop temp-php-container
 ```
+
+uncomment line 15 from docker-compose.yml and `docker-compose up -d`
+
+----------------------------------------------------------------------------------------------------------
+## Additional
+https://github.com/rlerdorf/opcache-status
+
 
