@@ -77,8 +77,8 @@ RUN set -eux; \
 # #############################################################################
 # Apply Basic PHP Configurations
 # #############################################################################
-ENV PHP_INI=$PHP_INI_DIR/php.ini
-
+#ENV PHP_INI=$PHP_INI_DIR/php.ini
+#
 # Configure PHP and Opcache
 #RUN set -eux; \
 #    rm -f $PHP_INI_DIR/php.ini-development && mv $PHP_INI_DIR/php.ini-production $PHP_INI_DIR/php.ini \
