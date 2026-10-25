@@ -2,15 +2,15 @@
 # Original PHP-FPM with Multi-PHP Version Support
 # #############################################################################
 
-# Use ARG to define the PHP version, with 7.4 as the default
-ARG PHP_VERSION=7.4
+# Use ARG to define the PHP version, with 8.4 as the default
+ARG PHP_VERSION=8.4
 FROM php:${PHP_VERSION}-fpm
 
 # General metadata
 ENV image_version="1.0"
 LABEL maintainer="me@ShayanGoudarzi.ir" \
       version=${image_version} \
-      description="PHP-FPM with support for multiple PHP versions + Useful PHP extensions + Basic configuration"
+      description="PHP-FPM with support for multiple PHP versions + Useful PHP extensions"
 
 # #############################################################################
 # Useful PHP extensions
@@ -49,26 +49,26 @@ RUN apt-get update \
 # #############################################################################
 # Apply Basic PHP Configuration
 # #############################################################################
-ENV PHP_INI=$PHP_INI_DIR/php.ini
-
-RUN cp $PHP_INI_DIR/php.ini-production $PHP_INI \
-    && sed -i 's/short_open_tag.*/short_open_tag = On/g' $PHP_INI \
-    && sed -i 's/disable_functions.*/disable_functions = "show_source, system, shell_exec, passthru, exec, popen, proc_open"/g' $PHP_INI \
-    && sed -i 's/max_execution_time.*/max_execution_time = 300/g' $PHP_INI \
-    && sed -i 's/;max_input_vars.*/max_input_vars = 10000/g' $PHP_INI \
-    && sed -i 's/max_input_time.*/max_input_time = 300/g' $PHP_INI \
-    && sed -i 's/memory_limit.*/memory_limit = 256M/g' $PHP_INI \
-    && sed -i 's/post_max_size.*/post_max_size = 100M/g' $PHP_INI \
-    && sed -i 's/upload_max_filesize.*/upload_max_filesize = 100M/g' $PHP_INI \
-    && sed -i 's/;session.save_path.*/session.save_path = "\/tmp"/g' $PHP_INI \
-    && sed -i 's/;date.timezone.*/date.timezone = "UTC"/g' $PHP_INI \
-    # Opcache settings
-    && sed -i 's/;opcache.enable.*/opcache.enable=1/g' $PHP_INI \
-    && sed -i 's/;opcache.memory_consumption.*/opcache.memory_consumption=256/g' $PHP_INI \
-    && sed -i 's/;opcache.use_cwd.*/opcache.use_cwd=0/g' $PHP_INI \
-    && sed -i 's/;opcache.max_accelerated_files.*/opcache.max_accelerated_files=30000/g' $PHP_INI \
-    && sed -i 's/;opcache.validate_timestamps.*/opcache.validate_timestamps=1/g' $PHP_INI \
-    && sed -i 's/;opcache.revalidate_freq.*/opcache.revalidate_freq=0/g' $PHP_INI
+#ENV PHP_INI=$PHP_INI_DIR/php.ini
+#
+#RUN cp $PHP_INI_DIR/php.ini-production $PHP_INI \
+#    && sed -i 's/short_open_tag.*/short_open_tag = On/g' $PHP_INI \
+#    && sed -i 's/disable_functions.*/disable_functions = "show_source, system, shell_exec, passthru, exec, popen, proc_open"/g' $PHP_INI \
+#    && sed -i 's/max_execution_time.*/max_execution_time = 300/g' $PHP_INI \
+#    && sed -i 's/;max_input_vars.*/max_input_vars = 10000/g' $PHP_INI \
+#    && sed -i 's/max_input_time.*/max_input_time = 300/g' $PHP_INI \
+#    && sed -i 's/memory_limit.*/memory_limit = 256M/g' $PHP_INI \
+#    && sed -i 's/post_max_size.*/post_max_size = 100M/g' $PHP_INI \
+#    && sed -i 's/upload_max_filesize.*/upload_max_filesize = 100M/g' $PHP_INI \
+#    && sed -i 's/;session.save_path.*/session.save_path = "\/tmp"/g' $PHP_INI \
+#    && sed -i 's/;date.timezone.*/date.timezone = "UTC"/g' $PHP_INI \
+#    # Opcache settings
+#    && sed -i 's/;opcache.enable.*/opcache.enable=1/g' $PHP_INI \
+#    && sed -i 's/;opcache.memory_consumption.*/opcache.memory_consumption=256/g' $PHP_INI \
+#    && sed -i 's/;opcache.use_cwd.*/opcache.use_cwd=0/g' $PHP_INI \
+#    && sed -i 's/;opcache.max_accelerated_files.*/opcache.max_accelerated_files=30000/g' $PHP_INI \
+#    && sed -i 's/;opcache.validate_timestamps.*/opcache.validate_timestamps=1/g' $PHP_INI \
+#    && sed -i 's/;opcache.revalidate_freq.*/opcache.revalidate_freq=0/g' $PHP_INI
 
 # #############################################################################
 # User Management
