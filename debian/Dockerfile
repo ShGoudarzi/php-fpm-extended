@@ -18,7 +18,7 @@ LABEL maintainer="me@ShayanGoudarzi.ir" \
 ENV EXTENSIONS="bcmath bz2 calendar dba exif gd gettext gmp imagick imap intl \
                 ioncube_loader memcache memcached mysqli odbc opcache pcntl \
                 pdo_mysql pdo_odbc pdo_pgsql pgsql redis soap sockets \
-                sourceguardian tidy timezonedb xmlrpc xsl zip"
+                sourceguardian tidy timezonedb xmlrpc xsl redis zip"
 
 # Set non-interactive mode for package installation
 ENV DEBIAN_FRONTEND=noninteractive
