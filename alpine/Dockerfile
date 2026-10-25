@@ -46,6 +46,7 @@ ENV EXTENSIONS=" @composer \
     timezonedb \
     xmlrpc \
     xsl \
+    redis \
     zip"
 
 # Install PHP extensions and clean up in a single RUN layer
